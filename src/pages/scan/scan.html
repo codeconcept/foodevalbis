@@ -8,5 +8,19 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-fab bottom right>
+    <button ion-fab (click)="scanBarcode()">
+      <ion-icon name="barcode"></ion-icon>
+    </button>
+  </ion-fab>
+
+  <ion-card *ngIf="result">
+    <ion-card-content>
+      <p>code barre : {{result.text}}</p>
+      <p>format : {{result.format}}</p>
+      
+      {{ result | json }}
+    </ion-card-content>
+  </ion-card>
 
 </ion-content>
