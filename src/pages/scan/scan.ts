@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { BarcodeScanner, BarcodeScannerOptions, BarcodeScanResult } from '@ionic-native/barcode-scanner';
+import { HttpClient } from '@angular/common/http';
+// import { map } from 'rxjs/operators';
+import 'rxjs/add/operator/map';
 
 @IonicPage()
 @Component({
@@ -9,8 +12,11 @@ import { BarcodeScanner, BarcodeScannerOptions, BarcodeScanResult } from '@ionic
 })
 export class ScanPage {
   result: BarcodeScanResult;
+  BASE_URL = 'https://world.openfoodfacts.org/api/v0/product/';
+  api_response;
+  api_response_raw;
 
-  constructor(public navCtrl: NavController, private bcs: BarcodeScanner, public navParams: NavParams, private toastCtrl: ToastController) {
+  constructor(public navCtrl: NavController, private bcs: BarcodeScanner, public navParams: NavParams, private toastCtrl: ToastController, private http: HttpClient) {
   }
 
 
@@ -30,18 +36,20 @@ export class ScanPage {
 
   }
 
-  // async scanBarcode() {
-  //   try{
-  //     const options: BarcodeScannerOptions = {
-  //       prompt: 'Pointer votre caméra vers un code barre',
-  //       torchOn: false
-  //     };
+  getArticleByBarcode(code: string) {
+    this.http
+        .get(`${this.BASE_URL}${this.result.text}`)
+        // .map(res => res.json())
+        .subscribe(data => this.displayResult(data), error => this.handleGetError(error));
+  }
 
-  //     this.result = await this.bcs.scan(options);
-  //     await this.bcs.scan(options);
-  //   } catch(err) {
-  //     console.error(err);
-  //     this.toastCtrl.create({message: err.message}).present();      
-  //   }
-  // }
+  displayResult(data) {
+    this.api_response_raw = data;
+    this.api_response = data;
+  }
+
+  handleGetError(error) {
+    console.log(error);
+    console.error(error.message);
+  }
 }

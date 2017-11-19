@@ -18,9 +18,25 @@
     <ion-card-content>
       <p>code barre : {{result.text}}</p>
       <p>format : {{result.format}}</p>
-      
-      {{ result | json }}
+      <button ion-button (click)="getArticleByBarcode(result.text)" block>afficher le détail du produit</button>
     </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="api_response_raw">
+    <img src="{{api_response.product.image_url}}" alt="{{api_response['product']['ingredients_text']}}">
+    <p>{{api_response['product']['ingredients_text_with_allergens_fr']}}</p>
+    <!-- <p>traces de : {{api_response['product']['traces'] | lowercase}}</p> -->
+    <div>
+        {{api_response['product']['ingredients_text_with_allergens_fr']}}
+    </div>
+    <hr>
+    Apports :
+    <ul>
+      <li>glucides {{api_response['product']['nutriments']['carbohydrates_100g']}} % dont sucres {{api_response['product']['nutriments']['sugars_100g']}} %</li>
+      <li>lipides {{api_response['product']['nutriments']['fat_100g']}} % dont acide gras sat. {{api_response['product']['nutriments']['saturated-fat_100g']}} %</li>
+      <li>protéines {{api_response['product']['nutriments']['proteins_100g']}} %</li>
+      <li>fibres {{api_response['product']['nutriments']['fiber_100g']}} %</li>
+    </ul>
   </ion-card>
 
 </ion-content>
