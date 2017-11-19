@@ -22,7 +22,7 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card *ngIf="api_response_raw">
+  <ion-card *ngIf="api_response_raw && api_response.product">
     <img src="{{api_response.product.image_url}}" alt="{{api_response['product']['ingredients_text']}}">
     <p>{{api_response['product']['ingredients_text_with_allergens_fr']}}</p>
     <!-- <p>traces de : {{api_response['product']['traces'] | lowercase}}</p> -->
@@ -37,6 +37,7 @@
       <li>protéines {{api_response['product']['nutriments']['proteins_100g']}} %</li>
       <li>fibres {{api_response['product']['nutriments']['fiber_100g']}} %</li>
     </ul>
+    <button ion-button block (click)="addToFavoriteFood(api_response.product)">ajouter à mes favoris</button>
   </ion-card>
 
 </ion-content>

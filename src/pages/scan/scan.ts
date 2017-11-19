@@ -4,6 +4,7 @@ import { BarcodeScanner, BarcodeScannerOptions, BarcodeScanResult } from '@ionic
 import { HttpClient } from '@angular/common/http';
 // import { map } from 'rxjs/operators';
 import 'rxjs/add/operator/map';
+import { AngularFireDatabase, AngularFireList, AngularFireObject } from 'angularfire2/database';
 
 @IonicPage()
 @Component({
@@ -15,8 +16,11 @@ export class ScanPage {
   BASE_URL = 'https://world.openfoodfacts.org/api/v0/product/';
   api_response;
   api_response_raw;
+  afl: AngularFireList<any>;
 
-  constructor(public navCtrl: NavController, private bcs: BarcodeScanner, public navParams: NavParams, private toastCtrl: ToastController, private http: HttpClient) {
+  constructor(public navCtrl: NavController, private bcs: BarcodeScanner, public navParams: NavParams, private toastCtrl: ToastController,
+    private http: HttpClient, private afd: AngularFireDatabase) {
+      this.afl = this.afd.list('/food-articles')
   }
 
 
@@ -38,9 +42,9 @@ export class ScanPage {
 
   getArticleByBarcode(code: string) {
     this.http
-        .get(`${this.BASE_URL}${this.result.text}`)
-        // .map(res => res.json())
-        .subscribe(data => this.displayResult(data), error => this.handleGetError(error));
+      .get(`${this.BASE_URL}${this.result.text}`)
+      // .map(res => res.json())
+      .subscribe(data => this.displayResult(data), error => this.handleGetError(error));
   }
 
   displayResult(data) {
@@ -51,5 +55,13 @@ export class ScanPage {
   handleGetError(error) {
     console.log(error);
     console.error(error.message);
+  }
+
+  addToFavoriteFood(foodItem) {
+    const item = {
+      id: foodItem._id,
+      name:  foodItem.product_name_fr
+    };
+    this.afl.push(item);
   }
 }
